@@ -3,6 +3,8 @@ var keys = require("./keys.js");
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotify);
 var axios = require("axios");
+var moment = require("moment")
+var fs = require("fs");
 
 function getMeSpotify(song){
     console.log("spotify function");
@@ -61,9 +63,26 @@ function getMeMovie(movieName){
       );
 }
 function getMyBands(artist){
-
+  var queryURL = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+  console.log(queryURL)
+  axios.get(queryURL).then(function(response){
+    var data = response.data;
+    console.log("data: "+data);
+    for(var i=0; i<5;i++){
+      //console.log(data[i])
+      console.log(data[i].venue.name +"  " +data[i].venue.city +"   " +data[i].venue.country +"  " +moment(data[i].datetime).format("MM/DD/YYYY a"))
+      console.log("_________________")
+    }
+  })
 }
-
+function doWhatItSays()
+{
+  fs.readFile("random.txt","utf8", function(err, data){
+    console.log(data);
+    var datSpit =data.split(",");
+    startLiri(datSpit[0],datSpit[1])
+  })
+}
 function  startLiri(operation, data){
     switch (operation) {
         case "concert-this":
